@@ -7,7 +7,11 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@vue/composition-api": "^0.3.4",
     "core-js": "^3.6.4",
+    "lodash": "^4.17.15",
+    "lodash-es": "^4.17.15",
+    "scroll-into-view-if-needed": "^2.2.24",
     "vue": "^2.6.11",
     "vue-router": "^3.1.5",
     "vuetify": "^2.2.11",
