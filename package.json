@@ -7,17 +7,24 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@mdi/js": "^4.9.95",
     "@vue/composition-api": "^0.3.4",
     "core-js": "^3.6.4",
+    "dayjs": "^1.8.20",
     "lodash": "^4.17.15",
     "lodash-es": "^4.17.15",
+    "luxon": "^1.22.0",
+    "parse-link-header": "^1.0.1",
     "scroll-into-view-if-needed": "^2.2.24",
+    "vee-validate": "^3.2.5",
     "vue": "^2.6.11",
     "vue-router": "^3.1.5",
     "vuetify": "^2.2.11",
-    "vuex": "^3.1.2"
+    "vuex": "^3.1.2",
+    "vuex-map-fields": "^1.3.6"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.149",
     "@vue/cli-plugin-babel": "^4.2.0",
     "@vue/cli-plugin-typescript": "^4.2.0",
     "@vue/cli-service": "^4.2.0",
@@ -25,6 +32,7 @@
     "sass": "^1.19.0",
     "sass-loader": "^8.0.2",
     "typescript": "~3.7.5",
+    "vue-cli-plugin-pug": "^1.0.7",
     "vue-cli-plugin-vuetify": "^2.0.5",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.3.0"

@@ -1,14 +1,22 @@
 {
+  "typeRoots": [
+    "./node_modules/@types",
+    "./node_modules/vuetify/types"
+  ],
+  "types": [
+    "vuetify"
+  ],
   "compilerOptions": {
     "target": "esnext",
-    "module": "esnext",
-    "strict": true,
+    "module": "es2015",
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "allowJs": true,
     "sourceMap": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "types": [
       "webpack-env"
