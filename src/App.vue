@@ -42,11 +42,21 @@ import {
         mdiTableRowPlusAfter,
         mdiTableRowPlusBefore
     } from '@mdi/js'
+import {validate} from 'vee-validate'
+// import {createNamespacedHelpers} from 'vuex'
+// import api from '@/common/services/api'
+import CURRENCIES from '@/services/currencies.json'
 import FEditableTable from './components/FEditableTable/index.vue'
-import items from './items.json'
+import {items, search} from './items'
+import {changeTracker} from '@/services/utils'
 import FHelp from '@/components/FHelp'
 import FAutocomplete from '@/components/FAutocomplete'
 import FProductIcon from '@/components/FProductIcon'
+
+// import {UPDATE_AL_STORE} from '@/vendor/store/mutation-types'
+// import {STORE_NS} from '../constants'
+// import AddItems from './AddItems'
+// import PanelMixin from './PanelMixin'
 
 export default {
     name: 'App',
@@ -95,9 +105,14 @@ export default {
                     handler: this.onDelete.bind(this),
                     icon: mdiDeleteOutline
                 }
-            ],
-            s: []
+            ]
 
+        }
+    },
+    computed: {
+        minorUnits () {
+            // eslint-disable-next-line camelcase
+            return CURRENCIES[this.al.currency]?.minor_units || 0
         }
     },
     methods: {
@@ -106,8 +121,9 @@ export default {
             const params = {
                 ...(word ? {word} : {})
             }
-            return api.get('/api/autocomplete/origin', {params})
-                .then(res => this.s = res.data)
+            return search
+            // return api.get('/api/autocomplete/origin', {params})
+            //     .then(res => this.s = res.data)
         },
         searchFamily (keyword, {cutpot}) {
             const autocomplete = `${keyword || ''}`.trim()
@@ -206,6 +222,103 @@ export default {
                 value: rows
             })
         },
+        /**
+         * @returns {Promise<boolean>}
+         */
+        async validate ({row, column, value}) {
+            if (!column.rules) return true
+
+            const rowIndex = this.items.indexOf(row)
+            // Validate the value using its column's rules
+            return validate(value, column.rules, {name: this.$t(`columns.${column.name}`)})
+                .then((result) => {
+                    const errorPath = `panels.${this.index}.items.${rowIndex}.$errors`
+
+                    // If there is error, update the error model
+                    this[UPDATE_AL_STORE]({
+                        path: errorPath,
+                        value: {
+                            ...row.$errors,
+                            [column.name]: result.valid ? null : result.errors
+                        }
+                    })
+                    return result.valid
+                })
+        },
+        /**
+         * @returns {Promise<boolean>}
+         */
+        validateAll () {
+            /**
+             * @type {Promise[]}
+             */
+            const validations = []
+            for (const column of this.columns) {
+                for (const row of this.items) {
+                    // Only validate changed items
+                    if (row.id < 0 ||
+                        changeTracker.changedProps(row).filter(prop => !prop.startsWith('$')).length) {
+                        validations.push(this.validate({row, column, value: row[column.name]}))
+                    }
+                }
+            }
+
+            return Promise.all(validations).then((results) => {
+                return results.every(result => result)
+            })
+        }
     }
 }
 </script>
+<style scoped lang="sass">
+    @import "~@/variables"
+    .panel-items
+        margin-top: 32px
+        text-align: center
+
+    .f-editable-table.items-table
+        margin-left: -16px
+        margin-bottom: 8px
+        width: calc(100% + 32px)
+        ::v-deep
+            // Disable these border due to it's overlapping the sheet's border
+            td:first-child, th:first-child
+                border-left: none
+            td:last-child, th:last-child
+                border-right: none
+
+            // Adjust widths of columns
+            th.f-editable-table__header
+                @mixin width ($width)
+                    width: $width
+                    min-width: $width
+                &--row-number
+                    @include width(36px)
+                &--origin, &--family, &--variety
+                    width: 33%
+                &--cutpot
+                    @include width(56px)
+                &--color
+                    @include width(88px)
+                &--quantity
+                    @include width(104px)
+                &--unit
+                    @include width(88px)
+                &--grade
+                    @include width(104px)
+                &--price
+                    @include width(88px)
+                &--note
+                    @include width(88px)
+            td.f-editable-table__cell
+                &--price, &--quantity
+                    text-align: right
+                    padding-right: 4px
+            .cell-input
+                &--price input, &--quantity input
+                    text-align: right
+                    padding-right: 4px
+        .v-text-field
+            margin-top: 0
+            padding-top: 0
+</style>
