@@ -65,6 +65,7 @@
                 // Get the current value to search
                 // Due to debounce, there may be case where the component was destroyed before
                 // this function is called. In that case, combobox will not exist
+                /*
                 const val = this.$refs.combobox?.internalSearch
 
                 // If the internal search was cleared, quit
@@ -88,13 +89,14 @@
                     // Store the result
                     this.items = items
                 })
-
+                */
                 // Store current search promise
-                this.currentSearch = currentSearch
+                this.currentSearch = 'hello'
             }, 300),
-            onUpdateSearchInput (value) {
+            async onUpdateSearchInput (value) {
+                console.log('asda', this.$refs.combobox)
                 // When search input is updated, only start search when component is in focused
-                if (this.$refs.combobox.isFocused) this.doSearch()
+                // if (this.$refs.combobox.isFocused) this.doSearch()
 
                 // In case the input is not of multiple type, we also need to emit input event
                 // immediately

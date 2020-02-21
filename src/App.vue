@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  v-app
     f-editable-table.items-table(
         :columns="columns" :rows="items" :context-actions="actions"
         @input="onInput($event)" @reorder="onReorder($event)")
@@ -70,6 +70,26 @@ export default {
 
     data () {
         return {
+            index: 0,
+            al: {
+                "available_from": "2019-07-22T17:00:00Z",
+                "available_until": "2019-07-30T17:00:00Z",
+                "currency": "USD",
+                "id": "AIEFHK3TQACT2",
+                "image": {
+                    "original_height": 3008,
+                    "original_width": 2000,
+                    "url": "https://d2uaslj856bt5z.cloudfront.net/AdLrJYGABAE/AghTq3OABT0/AgiZv5cABXo.jpeg"
+                },
+                "introduction": "demo",
+                "method": "C&F",
+                "minimum_order_amount": 0,
+                "title": "demo",
+                "vendor": {
+                    "country": "Taiwan",
+                    "name": "First Vendor"
+                }
+            },
             items: items,
             columns: [
                 {name: 'cutpot'},
@@ -187,7 +207,8 @@ export default {
             // Trigger validation
             this.validate({row, column, value})
 
-            this[UPDATE_AL_STORE]({path, value})
+            // this[UPDATE_AL_STORE]({path, value})
+            this.items[rowIndex][column.name] = value
         },
         onCopy ({rowIndex, rowIndexes}) {
             this.copyItems({
@@ -217,33 +238,60 @@ export default {
             })
         },
         onReorder ({rows}) {
-            this[UPDATE_AL_STORE]({
-                path: `panels.${this.index}.items`,
-                value: rows
-            })
+            this.items = rows
+            // this[UPDATE_AL_STORE]({
+            //     path: `panels.${this.index}.items`,
+            //     value: rows
+            // })
         },
+        addItems ({panelIndex, itemNumber, addIndex}) {
+        // const panel = state.panels[panelIndex]
+        // Generate blank items to add
+        const newItems = _.range(itemNumber).map((item) => {
+            return {
+                id: _.uniqueId() * -1,
+                cutpot: 'cut',
+                family: '',
+                variety: '',
+                price: null,
+                unit: '',
+                grade: '',
+                quantity: null,
+                origin: '',
+                color: '',
+                note: '',
+                $errors: {}
+            }
+        })
+
+        const items = _.clone(panel.items)
+        items.splice(_.isNumber(addIndex) ? addIndex : items.length, 0, ...newItems)
+        // commit(types.UPDATE_AL_STORE, {[`panels[${panelIndex}].items`]: items})
+        this.items = items
+    },
         /**
          * @returns {Promise<boolean>}
          */
         async validate ({row, column, value}) {
-            if (!column.rules) return true
+            // if (!column.rules) return true
 
-            const rowIndex = this.items.indexOf(row)
-            // Validate the value using its column's rules
-            return validate(value, column.rules, {name: this.$t(`columns.${column.name}`)})
-                .then((result) => {
-                    const errorPath = `panels.${this.index}.items.${rowIndex}.$errors`
+            // const rowIndex = this.items.indexOf(row)
+            // // Validate the value using its column's rules
+            // return validate(value, column.rules, {name: this.$t(`columns.${column.name}`)})
+            //     .then((result) => {
+            //         const errorPath = `panels.${this.index}.items.${rowIndex}.$errors`
 
-                    // If there is error, update the error model
-                    this[UPDATE_AL_STORE]({
-                        path: errorPath,
-                        value: {
-                            ...row.$errors,
-                            [column.name]: result.valid ? null : result.errors
-                        }
-                    })
-                    return result.valid
-                })
+            //         // If there is error, update the error model
+            //         this[UPDATE_AL_STORE]({
+            //             path: errorPath,
+            //             value: {
+            //                 ...row.$errors,
+            //                 [column.name]: result.valid ? null : result.errors
+            //             }
+            //         })
+            //         return result.valid
+            //     })
+            return true
         },
         /**
          * @returns {Promise<boolean>}
@@ -252,20 +300,21 @@ export default {
             /**
              * @type {Promise[]}
              */
-            const validations = []
-            for (const column of this.columns) {
-                for (const row of this.items) {
-                    // Only validate changed items
-                    if (row.id < 0 ||
-                        changeTracker.changedProps(row).filter(prop => !prop.startsWith('$')).length) {
-                        validations.push(this.validate({row, column, value: row[column.name]}))
-                    }
-                }
-            }
+            // const validations = []
+            // for (const column of this.columns) {
+            //     for (const row of this.items) {
+            //         // Only validate changed items
+            //         if (row.id < 0 ||
+            //             changeTracker.changedProps(row).filter(prop => !prop.startsWith('$')).length) {
+            //             validations.push(this.validate({row, column, value: row[column.name]}))
+            //         }
+            //     }
+            // }
 
-            return Promise.all(validations).then((results) => {
-                return results.every(result => result)
-            })
+            // return Promise.all(validations).then((results) => {
+            //     return results.every(result => result)
+            // })
+            return true
         }
     }
 }
