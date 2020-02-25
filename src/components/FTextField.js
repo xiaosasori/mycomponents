@@ -1,6 +1,6 @@
 import {VTextField} from 'vuetify/lib'
 
-import {wrapValidation} from '@/common/services/utils'
+import {wrapValidation} from '@/services/utils'
 
 const FTextField = wrapValidation(VTextField)
 

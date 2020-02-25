@@ -1,37 +1,39 @@
 <template lang="pug">
   v-app
-    f-editable-table.items-table(
-        :columns="columns" :rows="items" :context-actions="actions"
-        @input="onInput($event)" @reorder="onReorder($event)")
-        template(v-slot:header="{column}")
-            | {{ column.name + (column.required ? '*' : '') }}
-            f-help(v-if="column.help") {{ column.help }}
-        // Specific rendering for cutpot
-        template(v-slot:cell-cutpot="{cell}")
-            f-product-icon(:icon="cell")
-        //- template(v-slot:cell-price="{cell}")
-        //-     i18n-n(v-if="cell !== null" :value="cell" :format="{key: 'currency', currency: al.currency}")
-        //-         // This empty slot will disable the currency sign from rendering
-        //-         template(v-slot:currency)
-        template(v-slot:cell-input-origin="{cell, onInput}")
-            f-autocomplete(
-                :value="cell" @input="onInput"
-                :resolver='searchOrigin')
-        template(v-slot:cell-input-family="{row, cell, onInput}")
-            f-autocomplete(
-                :value="cell" @input="onInput"
-                :resolverParams="{cutpot: row.cutpot}"
-                :resolver='searchFamily'
-                search-on-focus)
-        template(v-slot:cell-input-variety="{row, cell, onInput}")
-            f-autocomplete(
-                :value="cell" @input="onInput"
-                :resolverParams="{cutpot: row.cutpot, family: row.family}"
-                :resolver='searchVariety')
-        template(v-slot:cell-input-price="{cell, onInput}")
-            v-text-field(
-                type="number" :value="cell" @input="onInput"
-                hide-details autocomplete="off" lang="en" :step="1 / 10 ** minorUnits")
+    v-content
+        f-editable-table.items-table(
+            :columns="columns" :rows="items" :context-actions="actions"
+            @input="onInput($event)" @reorder="onReorder($event)")
+            template(v-slot:header="{column}")
+                | {{ column.name + (column.required ? '*' : '') }}
+                f-help(v-if="column.help") {{ column.help }}
+            // Specific rendering for cutpot
+            template(v-slot:cell-cutpot="{cell}")
+                f-product-icon(:icon="cell")
+            template(v-slot:cell-price="{cell}")
+                | {{cell}}
+                //- i18n-n(v-if="cell !== null" :value="cell" :format="{key: 'currency', currency: al.currency}")
+                //-     // This empty slot will disable the currency sign from rendering
+                //-     template(v-slot:currency)
+            template(v-slot:cell-input-origin="{cell, onInput}")
+                f-autocomplete(
+                    :value="cell" @input="onInput"
+                    :resolver='searchOrigin')
+            template(v-slot:cell-input-family="{row, cell, onInput}")
+                f-autocomplete(
+                    :value="cell" @input="onInput"
+                    :resolverParams="{cutpot: row.cutpot}"
+                    :resolver='searchFamily'
+                    search-on-focus)
+            template(v-slot:cell-input-variety="{row, cell, onInput}")
+                f-autocomplete(
+                    :value="cell" @input="onInput"
+                    :resolverParams="{cutpot: row.cutpot, family: row.family}"
+                    :resolver='searchVariety')
+            template(v-slot:cell-input-price="{cell, onInput}")
+                v-text-field(
+                    type="number" :value="cell" @input="onInput"
+                    hide-details autocomplete="off" lang="en" :step="1 / 10 ** minorUnits")
 </template>
 
 <script>
@@ -137,6 +139,7 @@ export default {
     },
     methods: {
         searchOrigin (keyword) {
+            console.log('searchOrigin')
             const word = `${keyword || ''}`.trim()
             const params = {
                 ...(word ? {word} : {})
@@ -146,6 +149,7 @@ export default {
             //     .then(res => this.s = res.data)
         },
         searchFamily (keyword, {cutpot}) {
+            console.log('searchFamily')
             const autocomplete = `${keyword || ''}`.trim()
             const params = {
                 type: 'family',
@@ -159,6 +163,7 @@ export default {
                 .then(({data}) => data.map(product => product.word))
         },
         searchVariety (keyword, {cutpot, family}) {
+            console.log('searchVariety')
             const autocomplete = `${family} ${keyword || ''}`.trim()
             const params = {
                 type: 'variety',
@@ -171,6 +176,7 @@ export default {
                 .then(({data}) => data.map(product => product.word))
         },
         onInput ({row, column, value}) {
+            console.log('onInput')
             // Empty column means that something was pasted beyond the table's columns range
             // We don't handle this case
             if (!column) return
@@ -211,6 +217,7 @@ export default {
             this.items[rowIndex][column.name] = value
         },
         onCopy ({rowIndex, rowIndexes}) {
+            console.log('onCopy')
             this.copyItems({
                 panelIndex: this.index,
                 itemIndexes: rowIndexes.length ? rowIndexes : [rowIndex],
@@ -218,12 +225,14 @@ export default {
             })
         },
         onDelete ({rowIndex, rowIndexes}) {
+            console.log('onDelete')
             this.deleteItems({
                 panelIndex: this.index,
                 itemIndexes: rowIndexes.length ? rowIndexes : [rowIndex]
             })
         },
         onAddAbove ({rowIndex, rowIndexes}) {
+            console.log('onAddAbove')
             this.addItems({
                 panelIndex: this.index,
                 itemNumber: rowIndexes.length || 1,
@@ -231,6 +240,7 @@ export default {
             })
         },
         onAddBelow ({rowIndex, rowIndexes}) {
+            console.log('onAddBelow')
             this.addItems({
                 panelIndex: this.index,
                 itemNumber: rowIndexes.length || 1,
@@ -238,6 +248,7 @@ export default {
             })
         },
         onReorder ({rows}) {
+            console.log('onReorder')
             this.items = rows
             // this[UPDATE_AL_STORE]({
             //     path: `panels.${this.index}.items`,
@@ -245,6 +256,7 @@ export default {
             // })
         },
         addItems ({panelIndex, itemNumber, addIndex}) {
+            console.log('addItems')
         // const panel = state.panels[panelIndex]
         // Generate blank items to add
         const newItems = _.range(itemNumber).map((item) => {
@@ -273,6 +285,7 @@ export default {
          * @returns {Promise<boolean>}
          */
         async validate ({row, column, value}) {
+            console.log('validate')
             // if (!column.rules) return true
 
             // const rowIndex = this.items.indexOf(row)
@@ -300,6 +313,7 @@ export default {
             /**
              * @type {Promise[]}
              */
+            console.log('validateAll')
             // const validations = []
             // for (const column of this.columns) {
             //     for (const row of this.items) {

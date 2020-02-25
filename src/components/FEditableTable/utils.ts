@@ -1,4 +1,5 @@
-import {clone, range} from 'lodash-es'
+import clone from 'lodash/clone'
+import range from 'lodash/range'
 
 import {Column, Row, TableInstance} from './types'
 

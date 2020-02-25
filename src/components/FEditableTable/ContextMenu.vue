@@ -23,7 +23,7 @@
 </style>
 
 <script lang="ts">
-    import {computed, createComponent, PropType, reactive, toRefs} from '@vue/composition-api'
+    import {computed, defineComponent, PropType, reactive, toRefs} from '@vue/composition-api'
 
     import {
         CellMouseEvent,
@@ -39,7 +39,7 @@
         toRows
     } from './utils'
 
-    export default createComponent({
+    export default defineComponent({
         inject: ['$table'],
         props: {
             actions: {
@@ -92,6 +92,8 @@
                 if (typeof action.label === 'function') {
                     return action.label(actionPayload.value)
                 } else {
+                    // Since we don't use this yet, temporary ignore from cov
+                    /* istanbul ignore next */
                     return action.label
                 }
             }

@@ -38,7 +38,7 @@
 
 <script lang="ts">
     /* eslint-disable no-param-reassign */
-    import {computed, createComponent, Ref, ref, watch} from '@vue/composition-api'
+    import {computed, defineComponent, Ref, ref, watch} from '@vue/composition-api'
     import clone from 'lodash/clone'
     import concat from 'lodash/concat'
     import range from 'lodash/range'
@@ -62,7 +62,7 @@
     type IsDraggingRef = Ref<boolean>
     type DragIndexRef = Ref<number>
 
-    export default createComponent({
+    export default defineComponent({
         setup () {
             const selectedIndexes = setupSelectedIndexes()
             const isSelecting: IsSelectingRef = ref(false)

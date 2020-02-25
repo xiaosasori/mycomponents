@@ -289,7 +289,7 @@ export function loadRoute (AsyncView: AsyncComponentPromise): Promise<Functional
  */
 export function wrapValidation (VInputComponent: VueConstructor): FunctionalComponentOptions {
     const PROVIDER_PROPS = ['vid', 'name', 'rules']
-
+    
     return {
         functional: true,
         render (h, ctx): VNode {

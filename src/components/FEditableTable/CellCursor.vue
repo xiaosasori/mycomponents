@@ -21,7 +21,7 @@
 <script lang="ts">
     import {
         computed,
-        createComponent,
+        defineComponent,
         getCurrentInstance,
         watch
     } from '@vue/composition-api'
@@ -34,7 +34,7 @@
         getSelectedRowIndexes
     } from './utils'
 
-    export default createComponent({
+    export default defineComponent({
         setup () {
             updateCursorModelOnEvents()
             makeSureCursorStayInside()
@@ -103,6 +103,7 @@
         // Make sure cursor stay inside the table when the number of columns has changed
         watch(() => $table.columns.length, (newColumnsLength) => {
             if (newColumnsLength - 1 < cursor.columnIndex) {
+                /* istanbul ignore next */
                 cursor.columnIndex = newColumnsLength - 1
             }
         })

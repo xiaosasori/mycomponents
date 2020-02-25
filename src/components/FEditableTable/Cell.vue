@@ -28,10 +28,12 @@
 <style lang="sass" scoped>
     td
         user-select: none
+        overflow: hidden
+        white-space: nowrap
 </style>
 
 <script lang="ts">
-    import {createComponent} from '@vue/composition-api'
+    import {defineComponent} from '@vue/composition-api'
     import {PropType} from 'vue'
 
     import {
@@ -40,7 +42,7 @@
         Row
     } from './types'
 
-    export default createComponent({
+    export default defineComponent({
         props: {
             column: {
                 type: Object as PropType<Column>,

@@ -45,7 +45,7 @@
 <script lang="ts">
     import {
         computed,
-        createComponent,
+        defineComponent,
         getCurrentInstance,
         Ref,
         ref,
@@ -55,7 +55,7 @@
 
     import {getCursor, getTable} from './types'
 
-    export default createComponent({
+    export default defineComponent({
         setup () {
             const {style, cellClass} = setupCellStyle()
             const {row, column, cell, editing, inputType} = setupTemplateModels()
@@ -156,12 +156,8 @@
                     try {
                         input.selectionStart = input.selectionEnd
                     } catch (e) {
-                        if (e.message.includes('selectionStart')) {
-                            // Try setting selectionStart on a number input will cause exception
-                            // This is safe to ignore
-                        } else {
-                            throw e
-                        }
+                        // Try setting selectionStart on a number input will cause exception
+                        // This is safe to ignore
                     }
                 })
             } else {
@@ -211,8 +207,11 @@
                 disableEditMode()
                 // Then re-enable to show the input
                 setTimeout(() => enableEditMode)
+                console.log('disable')
             } else {
                 // Otherwise just show the input directly
+                console.log('enable')
+                debugger
                 enableEditMode()
             }
         })

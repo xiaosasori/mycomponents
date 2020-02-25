@@ -4,7 +4,8 @@ import {VueConstructor} from 'vue'
 export interface Row {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
-};
+}
+
 export interface Column {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
@@ -24,6 +25,7 @@ export const TableSymbol: InjectionKey<TableInstance> = Symbol('table')
 
 export function getTable (): TableInstance {
     const $table = inject(TableSymbol)
+    /* istanbul ignore next */
     if (!$table) throw Error('table not found')
     return $table
 }
@@ -41,6 +43,7 @@ export const CursorSymbol: InjectionKey<CursorInterface> = Symbol('cursor')
 
 export function getCursor (): CursorInterface {
     const cursor = inject(CursorSymbol)
+    /* istanbul ignore next */
     if (!cursor) throw Error('cursor not found')
     return cursor
 }

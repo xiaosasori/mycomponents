@@ -12,14 +12,14 @@
 
 <script lang="ts">
     /* eslint-disable no-param-reassign */
-    import {computed, createComponent, watch} from '@vue/composition-api'
+    import {computed, defineComponent, watch} from '@vue/composition-api'
     import isEqual from 'lodash/isEqual'
     import throttle from 'lodash/throttle'
 
     import {getCursor, getTable, SelectedCellRegion} from './types'
     import {inInclusiveRange} from './utils'
 
-    export default createComponent({
+    export default defineComponent({
         setup () {
             const selectedCellRegion = setupSelectedCellRegion()
             const selectedCellRegionStyle = setupSelectedCellRegionStyle(selectedCellRegion)
@@ -62,9 +62,11 @@
 
         // When the number of columns changes, make sure the selected cell region stay inside
         watch(() => $table.columns.length, (newColumnsLength) => {
+            /* istanbul ignore next */
             if (selectedCellRegionRef.value?.start.columnIndex > newColumnsLength - 1) {
                 selectedCellRegionRef.value.start.columnIndex = newColumnsLength - 1
             }
+            /* istanbul ignore next */
             if (selectedCellRegionRef.value?.end.columnIndex > newColumnsLength - 1) {
                 selectedCellRegionRef.value.end.columnIndex = newColumnsLength - 1
             }

@@ -66,7 +66,7 @@
 
 <script lang="ts">
     import {
-        createComponent,
+        defineComponent,
         getCurrentInstance,
         PropType,
         provide,
@@ -87,7 +87,7 @@
     import RowSelectionRegion from './RowSelectionRegion.vue'
     import {CursorSymbol, getTable, SelectedCellRegion, SelectedIndexes, TableSymbol} from './types'
 
-    export default createComponent({
+    export default defineComponent({
         components: {
             ContextMenu,
             Row,
@@ -113,7 +113,7 @@
             contextActions: {
                 type: Array,
                 required: false,
-                default: () => ([])
+                default: /* istanbul ignore next */ () => ([])
             },
             selectedIndexes: {
                 type: Array as PropType<SelectedIndexes>,
