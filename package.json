@@ -11,7 +11,7 @@
     "@vue/composition-api": "^0.4.0",
     "core-js": "^3.6.4",
     "dayjs": "^1.8.20",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "lodash-es": "^4.17.15",
     "luxon": "^1.22.0",
     "parse-link-header": "^1.0.1",
